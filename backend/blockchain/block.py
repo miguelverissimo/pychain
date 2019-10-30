@@ -83,10 +83,48 @@ class Block:
 
         return 1
 
+    @staticmethod
+    def is_valid_block(previous_block, block):
+      """
+      Validate a block:
+        - must have previous_hash equal to previous_block.hash
+        - must meet proof of work
+        - difficulty should be within 1 of the previous_block
+        - hash must be a combination of the block's fields
+      """
+      if block.prev_hash != previous_block.hash:
+        raise Exception('previous hash mismatch')
+
+      if hex_to_binary(block.hash)[0:block.difficulty] != '0' * block.difficulty:
+        raise Exception('proof of work constraints not met')
+
+      if abs(previous_block.difficulty - block.difficulty) > 1:
+        raise Exception('difficulty expectation not met')
+
+      rebuilt_hash = crypto_hash(
+        block.timestamp,
+        block.prev_hash,
+        block.data,
+        block.difficulty,
+        block.nonce
+      )
+
+      if block.hash != rebuilt_hash:
+        raise Exception(f'hash mismatch got: {block.hash} want: {rebuilt_hash}')
+
+
 def main():
     genesis_block = Block.genesis()
     block = Block.mine(genesis_block, 'foo')
-    print(block)
+    Block.is_valid_block(genesis_block, block)
+    print(f'block: {block}')
+    bad_block = Block.mine(block, 'foo')
+    # bad_block.prev_hash = 'totally-legit'
+    bad_block.difficulty = 9000
+    try:
+      Block.is_valid_block(block, bad_block)
+    except Exception as e:
+      print(f'is_valid_block: {e}')
 
 
 if __name__ == "__main__":

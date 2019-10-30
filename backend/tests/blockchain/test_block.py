@@ -1,3 +1,4 @@
+import pytest
 import time
 from backend.blockchain.block import Block, GENESIS_DATA
 from backend.config import MINE_RATE, SECONDS
@@ -46,3 +47,36 @@ def test_adjust_difficulty_limits_at_1():
     mined_block = Block.mine(last_block, 'bar')
 
     assert mined_block.difficulty == 1
+
+@pytest.fixture
+def prev_block():
+  return Block.genesis()
+
+@pytest.fixture
+def block(prev_block):
+  return Block.mine(prev_block, 'foo')
+
+def test_is_valid_block(prev_block, block):
+    Block.is_valid_block(prev_block, block)
+    
+def test_is_valid_block_tampered_prev_hash(prev_block, block):
+    block.prev_hash = 'tampered_prev_hash'
+    with pytest.raises(Exception, match='previous hash mismatch'):
+      Block.is_valid_block(prev_block, block)
+    
+def test_is_valid_block_tampered_proof_of_work(prev_block, block):
+    block.hash = 'fffffffffff'    
+    with pytest.raises(Exception, match='proof of work constraints not met'):
+      Block.is_valid_block(prev_block, block)
+    
+def test_is_valid_block_tampered_difficulty(prev_block, block):
+    block.difficulty = 10
+    block.hash = f'{"0" * block.difficulty}26a874e8975b8972f'
+    with pytest.raises(Exception, match='difficulty expectation not met'):
+      Block.is_valid_block(prev_block, block)
+    
+def test_is_valid_block_tampered_hash(prev_block, block):
+    correct_hash = block.hash
+    block.hash = '0000000000000000000000000000000000000facada'    
+    with pytest.raises(Exception, match=f'hash mismatch got: {block.hash} want: {correct_hash}'):
+      Block.is_valid_block(prev_block, block)
