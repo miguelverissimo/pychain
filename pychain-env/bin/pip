@@ -1,4 +1,4 @@
-#!/Users/pivotal/go/src/github.com/miguelverissimo/pychain/pychain-env/bin/python3
+#!/Users/pivotal/go/src/github.com/miguelverissimo/pychain/pychain-env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
