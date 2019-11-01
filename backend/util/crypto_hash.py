@@ -8,16 +8,14 @@ def crypto_hash(*args):
     """
 
     args_string = sorted(map(lambda data: json.dumps(data), args))
-    concatenated = ''.join(args_string)
+    concatenated = "".join(args_string)
 
-    return hashlib.sha256(concatenated.encode('utf-8')).hexdigest()
+    return hashlib.sha256(concatenated.encode("utf-8")).hexdigest()
 
 
 def main():
-    print(
-        f"crypto_hash('foo', 233223, [4]): {crypto_hash('foo', 233223, [4])}")
-    print(
-        f"crypto_hash(233223, 'foo', [4]): {crypto_hash(233223, 'foo', [4])}")
+    print(f"crypto_hash('foo', 233223, [4]): {crypto_hash('foo', 233223, [4])}")
+    print(f"crypto_hash(233223, 'foo', [4]): {crypto_hash(233223, 'foo', [4])}")
 
 
 if __name__ == "__main__":
