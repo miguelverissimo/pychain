@@ -31,3 +31,27 @@ def test_is_valid_chain_invalid_genesis(blockchain_with_blocks):
     blockchain_with_blocks.chain[0].hash = 3000
     with pytest.raises(Exception, match="genesis block is invalid"):
         Blockchain.is_valid_chain(blockchain_with_blocks.chain)
+
+
+def test_replace_chain(blockchain_with_blocks):
+    blockchain = Blockchain()
+    blockchain.replace_chain(blockchain_with_blocks.chain)
+
+    assert blockchain.chain == blockchain_with_blocks.chain
+
+
+def test_replace_chain_smaller_chain(blockchain_with_blocks):
+    blockchain = Blockchain()
+
+    with pytest.raises(
+        Exception, match="incoming chain is not longer than the current chain"
+    ):
+        blockchain_with_blocks.replace_chain(blockchain.chain)
+
+
+def test_replace_chain_invalid_chain(blockchain_with_blocks):
+    blockchain = Blockchain()
+    blockchain_with_blocks.chain[2].hash = "tampered_hash"
+
+    with pytest.raises(Exception, match="chain is not valid"):
+        blockchain.replace_chain(blockchain_with_blocks.chain)

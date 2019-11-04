@@ -15,6 +15,22 @@ class Blockchain:
     def __repr__(self):
         return f"Blockchain: {self.chain}"
 
+    def replace_chain(self, chain):
+        """
+        Replace the current chain with the incoming one, if:
+          - the incoming chain is longer than the current;
+          - the incoming chain is valid.
+        """
+        if len(chain) <= len(self.chain):
+            raise Exception("incoming chain is not longer than the current chain")
+
+        try:
+            Blockchain.is_valid_chain(chain)
+        except Exception as e:
+            raise Exception(f"chain is not valid: {e}")
+
+        self.chain = chain
+
     @staticmethod
     def is_valid_chain(chain):
         """
