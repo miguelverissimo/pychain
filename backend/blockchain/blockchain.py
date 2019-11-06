@@ -14,7 +14,6 @@ class Blockchain:
 
     def to_json(self):
         return list(map(lambda block: block.to_json(), self.chain))
-        return serialized
 
     def add_block(self, data):
         self.chain.append(Block.mine(self.chain[-1], data))

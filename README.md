@@ -40,6 +40,11 @@ pip3 install -r requirements.txt
 
 # Development
 
+### Running the server
+```
+python3 -m backend.app
+```
+
 ### Running the tests:
 ```
 python3 -m pytest backend/tests
